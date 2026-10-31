@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><title>relay</title><body>relay
+<script>
+const names=(new URLSearchParams(location.search).get('f')||'').split(',').filter(Boolean);
+Promise.all(names.map(n=>fetch(n,{cache:'no-store'}).then(r=>r.arrayBuffer()).then(b=>({name:n,buf:b})))).then(files=>{
+  (window.opener||window.parent).postMessage({vipera:true,files},'*',files.map(f=>f.buf));
+  document.body.textContent='sent '+files.length;
+}).catch(e=>{(window.opener||window.parent).postMessage({vipera:true,error:String(e)},'*');});
+</script>
